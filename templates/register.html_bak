@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/web/">配置管理系统</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header col-md-offset-4 col-md-4">
+        <h1>欢迎注册</h1>
+    </div>
+    <div class="col-md-4 col-center-block">
+     <form  class="form-horizontal" action="/web/register/" method="POST">
+         <div class="form-group">
+            <label  class="col-sm-2 control-label">名字</label>
+            <div class="col-sm-4">
+              {{ form.username }}
+            </div>
+         </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">邮箱</label>
+            <div class="col-sm-4">
+              {{ form.email }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-4">
+            {{ form.password }}
+            </div>
+        </div>
+         <hr>
+       <div class="form-group">
+            <div class="col-sm-10">
+              <button type="submit" class="btn btn-lg btn-inverse btn-block">注册</button>
+            </div>
+       </div>
+     </form>
+     </div>
+</div>
+{% endblock content %}

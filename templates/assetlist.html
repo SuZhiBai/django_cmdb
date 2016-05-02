@@ -1,0 +1,27 @@
+{% load helper %} <!--引入templatetags中定义的filter-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+      <h1>{{ user }}</h1>
+        {% ifequal user 'tom' %}
+        <h2>tom</h2>
+        {% else %}
+         <h2>jerry</h2>
+        {% endifequal %}
+      <table border="1px">
+          {% for item in data %}
+              <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{% mymethod item.id %}</td>
+                    <td>{{ item.hostname }}</td>
+                    <td>{{ item.create_date|date:'Y-m-d H:i:s' }}</td>
+                    <td>{{ item.update_date|date:'Y-m-d H:i:s'}}</td>
+              </tr>
+          {% endfor %}
+      </table>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% block page_content %}
+<div class="col-md-10">
+    <div class="menu2 menu_tab">
+    <div id="tab-1" class="tab">
+    <div><form action="/search/" method="get">
+    <a class="btn btn-info theme-idc-modify" style="height:100%;" href="javascript:;">添加机房</a>
+        <input type="submit" value="搜索" style="float:right;">
+        <input type="text" name="word" style="float:right;">
+    </form>
+    </div>
+    <table class="table table-bordered table-hover">
+    <br/>
+       <thead>
+          <tr>
+             <th>机房名称</th>
+             <th>城市名称</th>
+             <th>运营商</th>
+             <th>厂商名称</th>
+             <th>联系人</th>
+             <th>联系电话</th>
+             <th>操作</th>
+          </tr>
+       </thead>
+       <tbody>
+            {% for item in idcs %}
+          <tr id="idc-{{item.id}}">
+                    <td>{{item.roomname}}</td>
+                    <td>{{item.roomcity}}</td>
+                    <td>{{item.isp}}</td>
+                    <td>{{item.tradename}}</td>
+                    <td>{{item.contacts}}</td>
+                    <td>{{item.telephone}}</td>
+        <td><a class="btn btn-primary btn-large theme-idc-modify" href="javascript:;">修改</a>&nbsp;&nbsp;
+            <a class="btn btn-primary btn-large theme-idc-delete" href="/delete?t=idc&id={{item.id}}&name={{item.name}}&isp={{item.company}}">删除</a></td>
+          </tr>
+        {% endfor %}
+       </tbody>
+    </table>
+    </div>
+    </div>
+</div>
+<div class="theme-add-idc">
+     <div class="theme-poptit-idc">
+          <a href="javascript:;" title="关闭" class="close" >关闭</a>
+          <h3>&nbsp;&nbsp;&nbsp;&nbsp;机房信息录入</h3>
+     </div>
+     <div class="theme-popbod dform">
+           <form class="theme-signin" name="hostroomform" id="addhostroomform" method="post">
+               {% csrf_token %}
+                {{ hostroomform|bootstrap }}
+               <button type="button" class="btn btn-primary" id='addhostroom' data-dismiss="alert" > 提交 </button>
+           </form>
+     </div>
+</div>
+<div class="theme-edit-idc">
+     <div class="theme-poptit-idc">
+          <a href="javascript:;" title="关闭" class="close" >关闭</a>
+          <h3>&nbsp;&nbsp;&nbsp;&nbsp;机房信息录入</h3>
+     </div>
+     <div class="theme-popbod dform">
+           <form class="theme-signin" name="hostroomform" id="addhostroomform" method="post">
+               {% csrf_token %}
+                {{ hostroomform|bootstrap }}
+               <button type="button" class="btn btn-primary" id='addhostroom' data-dismiss="alert" > 提交 </button>
+           </form>
+     </div>
+</div>
+{% endblock %}

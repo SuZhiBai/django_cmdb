@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% block page_content %}
+<div class="col-md-10">
+    <h5>首页</h5>
+    <hr/>
+    <div class="menu1 menu_tab">
+    <div id="tab2" class="tab">
+        <form action="">
+        <a class="btn btn-info theme-host-modify" style="height:100%;" href="javascript:;">添加主机</a></td>
+            <button style="float:right;">搜索</button>
+            <input type="text" id="txt1" onkeyup="showHint(this.value)" name="word" style="float:right;">
+        </form>
+    <table class="table table-bordered">
+	    <br/>
+        <thead>
+            <tr>
+             <th>设备IP</th>
+             <th>机房名称</th>
+             <th>机架编号</th>
+             <th>设备型号</th>
+             <th>负责人</th>
+             <th>创建时间</th>
+             <th>修改时间</th>
+             <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="txtHint">
+            {% for item in hosts %}
+            <tr>
+                    <td>{{item.hostname}}</td>
+                    <td>{{item.hostroom}}</td>
+                    <td>{{item.racknum}}</td>
+                    <td>{{item.equmodel}}</td>
+                    <td>{{item.personin}}</td>
+                    <td>{{item.create_date}}</td>
+                    <td>{{item.update_date}}</td>
+                    <td><a class="btn btn-primary btn-large theme-host-modify" href="/modify?t=host&id={{item.id}}&name={{item.name}}&isp={{item.company}}&ip={{item.ip}}&role={{item.role}}&rack={{item.rack}}">修改</a>&nbsp;&nbsp;
+                <a class="btn btn-primary btn-large theme-host-delete" href="/delete?t=host&id={{item.id}}&name={{item.name}}&isp={{item.company}}">删除</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        <a href="#" style="float:right;padding-left:20px;">下一页</a>
+        <a href="#" style="float:right;padding-left:20px;">第一页</a>
+        <a href="#" style="float:right;padding-left:20px;">上一页</a>
+        </div>
+    </div>
+</div>
+
+<div class="theme-popover-host">
+     <div class="theme-poptit-host">
+          <a href="javascript:;" title="关闭" class="close" >关闭</a>
+          <h3>&nbsp;&nbsp;&nbsp;&nbsp;新增设备信息</h3>
+     </div>
+     <div class="theme-popbod dform">
+           <form class="theme-signin" name="hostform" action="/web/addhost/" method="post">
+                {% csrf_token %}
+                {{ hostform|bootstrap }}
+                <input class="l_btn l_btn-primary" type="submit" name="submit" value=" 确认提交 " />
+           </form>
+        </div>
+</div>
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% block page_content %}
+<div class="col-md-10">
+     <div id="toolbar">
+            <div class="form-inline " role="form">
+                <div class="form-group">
+                        <button id="button_add" class="btn btn-primary">增加</button>
+                </div>
+                <div class="form-group">
+                        <button id="button_edit" class="btn btn-primary">编辑</button>
+                </div>
+                <div class="form-group">
+                        <button id="button_del" class="btn btn-primary">删除</button>
+                </div>
+            </div>
+     </div>
+     <table id="table"
+        data-toolbar="#toolbar"
+        data-show-refresh="true"
+        data-show-toggle="true"
+        data-show-columns="true"
+        data-show-export="true"
+        data-detail-view="true"
+        data-detail-formatter="detailFormatter"
+        data-minimum-count-columns="2"
+        data-show-pagination-switch="true"
+        data-pagination="true"
+        data-id-field="id"
+        data-page-list="[5, 10, 20, 50, 100, 200]"
+        data-show-footer="true"
+        data-side-pagination="server"
+        data-search="true"
+        data-search-on-enter-key="true"
+        data-url="/web/tablelist/"
+        data-response-handler="responseHandler"
+        data-toggle="table"
+        data-height="460"
+        data-click-to-select="true">
+       <thead>
+          <tr>
+             <th data-field="state" data-checkbox="true"></th>
+             <th data-field="id" style="display:none">机房ID</th>
+             <th data-field="roomname" >机房名称</th>
+             <th data-field="roomcity" >城市名称</th>
+             <th data-field="isp" >运营商</th>
+             <th data-field="tradename" >厂商名称</th>
+             <th data-field="contacts" >联系人</th>
+             <th data-field="telephone" >联系电话</th>
+          </tr>
+       </thead>
+    </table>
+</div>
+<div class="theme-add-idc">
+     <div class="theme-poptit-idc">
+          <a href="javascript:;" title="关闭" class="close" >关闭</a>
+          <h3>&nbsp;&nbsp;&nbsp;&nbsp;机房信息录入</h3>
+     </div>
+     <div class="theme-popbod dform">
+           <form class="theme-signin" name="hostroomform" id="addhostroomform" method="post">
+               {% csrf_token %}
+                {{ hostroomform|bootstrap }}
+               <button type="button" class="btn btn-primary" id='addhostroom' data-dismiss="alert" > 提交 </button>
+           </form>
+     </div>
+</div>
+<div class="theme-edit-idc">
+     <div class="theme-poptit-idc">
+          <a href="javascript:;" title="关闭" class="close" >关闭</a>
+          <h3>&nbsp;&nbsp;&nbsp;&nbsp;机房信息录入</h3>
+     </div>
+     <div class="theme-popbod dform">
+           <form class="theme-signin" name="hostroomform" id="edithostroomform" method="post">
+               {% csrf_token %}
+                {{ hostroomform|bootstrap }}
+               <button type="button" class="btn btn-primary" id='edithostroom' data-dismiss="alert" > 提交 </button>
+           </form>
+     </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+var $table = $('#table'),
+    $button_del = $('#button_del');
+$(document).ready(function () {
+    $table.bootstrapTable('hideColumn', 'id');
+    $('#button_add').unbind('click').click(function(){
+        $('#addhostroomform')[0].reset();
+        $('.theme-add-idc').slideDown(200);
+     });
+    $('.theme-poptit-idc .close').unbind('click').click(function(){
+        $('.theme-add-idc').slideUp(200);
+    });
+    $("#addhostroom").unbind('click').click(function () {
+        $.ajax({
+           type: "POST",
+           url:"/web/addhostroom/",
+           data:$("#addhostroomform").serialize(),// 要提交的表单
+           success: function(arg) {
+               var obj = jQuery.parseJSON(arg);
+               if(obj.status == 1){
+                    swal("添加成功!");
+                    $('.theme-add-idc').slideUp(200);
+                    $table.bootstrapTable('refresh');
+               }else{
+                    swal("添加失败!");
+                    $('.theme-add-idc').slideUp(200);
+               };
+           },
+           error: function(error){
+               swal("数据提交失败!");
+               $('.theme-add-idc').slideUp(200);
+           }
+        });
+        $('#addhostroomform')[0].reset();
+        return false;
+    });
+});
+
+$(document).ready(function () {
+    $button_del.click(function () {
+        var obj=$table.bootstrapTable('getSelections');
+        var data={'roomname':$table.bootstrapTable('getSelections')[0].roomname};
+        if (obj){
+        swal({
+                title: "确认删除吗？",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "删除",
+                closeOnConfirm: false
+            }, function() {
+         $.ajax({
+           type: "POST",
+           url:"/web/delhostroom/",
+           data:data,// 要提交的表单
+           success: function(arg) {
+               var obj = jQuery.parseJSON(arg);
+               if(obj.status == 1){
+                    swal("删除成功!");
+                    $table.bootstrapTable('refresh');
+               }else{
+                    swal("删除失败!");
+               };
+           },
+           error: function(error){
+               swal("数据提交失败!");
+           }
+        });
+            })};
+    });
+});
+var $button_edit = $('#button_edit');
+$(document).ready(function () {
+    $("#button_edit").unbind('click').click(function () {
+        var obj=$table.bootstrapTable('getSelections')[0];
+        if (obj){
+            for(var p in obj){
+               if(typeof(obj[p])=="function"){
+                    alert("okkk");
+                }else{
+                    $("#edithostroomform #id_"+p).val(obj[p]);
+                }
+            };
+            $('.theme-edit-idc').slideDown(200);
+        };});
+    $('.theme-edit-idc .close').unbind('click').click(function(){
+        $('.theme-edit-idc').slideUp(200);
+        $('#edithostroomform')[0].reset();
+    });
+    $("#edithostroom").unbind('click').click(function () {
+     $.ajax({
+           type: "POST",
+           url:"/web/updatehostroom/",
+           data:$("#edithostroomform").serialize(),// 要提交的表单
+           success: function(arg) {
+               var obj = jQuery.parseJSON(arg);
+               if(obj.status == 1){
+                    swal("编辑成功!");
+                    $('.theme-edit-idc').slideUp(200);
+                    $table.bootstrapTable('refresh');
+               }else{
+                    swal("编辑失败!");
+                    $('.theme-edit-idc').slideUp(200);
+               };
+           },
+           error: function(error){
+               swal("数据提交失败!");
+               $('.theme-edit-idc').slideUp(200);
+           }
+        });
+        $('#edithostroomform')[0].reset();
+        return false;
+    });
+});
+</script>
+
+{% endblock %}

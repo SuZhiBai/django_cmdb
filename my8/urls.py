@@ -1,5 +1,5 @@
 #coding:utf-8
-"""mydjango URL Configuration
+"""my8 URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -16,18 +16,20 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from web.views import index,Register,Login,HostList,AddHost,HostRoomList,AddHostRoom,TableList,DelHostRoom,UpdateHostRoom
+from django.views.generic.base import RedirectView
 
+'''
+url对应具体的方法-------------
+url(r'^index/',index),
+#动态路由,最后加上/后，访问时会自动补全/，否则不补全
+url(r'^list/(\d*)/',list),
+#name为对应view里参数的名字
+url(r'^listname/(?P<name>\d*)/',listname),
+'''
+#url做全局路由，路由至每个APP内部处理
 urlpatterns = [
-    url(r'^$', index, name='index'),
-    url(r'^login/$',Login,name='login'),
-    url(r'^register/$',Register,name='register'),
-    url(r'^hostlist/$', HostList, name='hostlist'),
-    url(r'^hostroomlist/$', HostRoomList, name='hostroomlist'),
-    url(r'^tablelist/$',TableList, name='tablelist'),
-    url(r'^addhost/$',AddHost,name='addhost'),
-    url(r'^addhostroom/$', AddHostRoom, name='addhostroom'),
-    url(r'^delhostroom/$', DelHostRoom, name='delhostroom'),
-    url(r'^updatehostroom/$', UpdateHostRoom, name='updatehostroom'),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', RedirectView.as_view(url='/web/')),
+    url(r'^web/',include('web.urls',namespace="web")),
 
 ]
